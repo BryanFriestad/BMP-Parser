@@ -9,7 +9,7 @@ using namespace std;
 
 int main()
 {
-    BMP_Image image{"rick.bmp"};
+    BMP_Image image{"test.bmp"};
     image.print_image_data();
     return 0;
 }

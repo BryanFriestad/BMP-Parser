@@ -90,7 +90,7 @@ void BMP_Image::print_image_data(){
     for(i = 0; i < image_height*image_width; i++){
         if(bits_per_pixel == 24){
             BMP_Pixel_24_bit p = pixel_data[i];
-            printf("<R: %u, G: %u, B: %u>\n", p.get_red(), p.get_green(), p.get_blue());
+            printf("(%d, %d) = <R: %u, G: %u, B: %u>\n", i%image_width, i/image_width, p.get_red(), p.get_green(), p.get_blue());
         }
     }
 }
