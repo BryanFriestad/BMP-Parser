@@ -26,14 +26,15 @@ private:
     int* palette; //unused unless bits_per_pixel is 1 or 4. Each 4 bytes is arranged as [RED, GREEN, BLUE, reserved]
 
     //Pixel Data
-    std::vector<Generic_BMP_Pixel> pixel_data;
+    std::vector<BMP_Pixel_24_bit> pixel_data;
 
 public:
     BMP_Image(char* filename); //used to load a bmp from a file
     BMP_Image(int x, int y); //makes a new 24 bit depth, no-compression, image with x width and y height, filled with white
     ~BMP_Image();
     void set_pixel(int x_pos, int y_pos, char r, char g, char b);
-    Generic_BMP_Pixel get_pixel(int x_pos, int y_pos);
+    BMP_Pixel_24_bit get_pixel(int x_pos, int y_pos);
+    void print_image_data();
 };
 
 #endif // BMP_IMAGE_H_INCLUDED

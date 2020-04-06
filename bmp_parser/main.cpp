@@ -1,16 +1,15 @@
 #include <iostream>
+#include <vector>
+#include <stdio.h>
+
+#include "bmp_pixel.h"
+#include "bmp_image.h"
 
 using namespace std;
 
 int main()
 {
-    cout << "Hello world!" << endl;
-    cout << sizeof(char) << endl;
-    cout << sizeof(short) << endl;
-    cout << sizeof(int) << endl;
-    cout << sizeof(long) << endl;
-    cout << sizeof(short int) << endl;
-    cout << sizeof(long int) << endl;
-    cout << sizeof(long long) << endl;
+    BMP_Image image{"rick.bmp"};
+    image.print_image_data();
     return 0;
 }
