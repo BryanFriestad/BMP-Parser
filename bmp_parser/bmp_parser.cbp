@@ -32,6 +32,13 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="bmp_image.cpp" />
+		<Unit filename="bmp_image.h" />
+		<Unit filename="bmp_pixel.cpp" />
+		<Unit filename="bmp_pixel.h" />
+		<Unit filename="debug_settings.h" />
+		<Unit filename="helper_functions.cpp" />
+		<Unit filename="helper_functions.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

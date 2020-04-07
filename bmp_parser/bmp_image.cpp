@@ -3,11 +3,9 @@
 #include "helper_functions.h"
 #include "debug_settings.h"
 
-#include <iostream>
-#include <fstream>
-#include <stdlib.h>
-#include <memory>
-#include <stdio.h>
+#include <stdlib.h> //free and malloc
+#include <stdio.h> //printf
+#include <math.h> //used for ceil
 
 BMP_Image::BMP_Image(char* filename){
     char* bmp = readFileBytes(filename);
@@ -53,6 +51,8 @@ BMP_Image::BMP_Image(char* filename){
     num_imp_colors              = constructIntegerFromByteArray(bmp + num_imp_colors_offset, 4, true);
 
     palette = (int*) malloc(sizeof(int) * num_colors_used);
+
+    int scanline_size = ceil((bits_per_pixel * image_width)/32) * 4; //the number of bytes per scanline, including padding up to multiple of 4 bytes
 
     int i;
     for(i = 0; i < (image_width * image_height * 3); i+=3){
