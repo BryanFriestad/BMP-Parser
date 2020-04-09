@@ -6,6 +6,7 @@
 #include <stdlib.h> //free and malloc
 #include <stdio.h> //printf
 #include <math.h> //used for ceil
+#include <cstdint> //used for uint8_t
 
 BMP_Image::BMP_Image(char* filename){
     char* bmp = readFileBytes(filename);
@@ -109,13 +110,130 @@ BMP_Image::~BMP_Image(){
     free(palette);
 }
 
+void BMP_Image::writeImageToFile(char* filename){
+    //construct byte array
+    uint8_t byte_arr[file_size];
+
+    //signature
+    byte_arr[0] = 'B';
+    byte_arr[1] = 'M';
+
+    //filesize
+    byte_arr[2] = (file_size >> 0) & 0xFF;
+    byte_arr[3] = (file_size >> 8) & 0xFF;
+    byte_arr[4] = (file_size >> 16) & 0xFF;
+    byte_arr[5] = (file_size >> 24) & 0xFF;
+
+    //reserved
+    byte_arr[6] = 0;
+    byte_arr[7] = 0;
+    byte_arr[8] = 0;
+    byte_arr[9] = 0;
+
+    //data offset = 54 bytes
+    byte_arr[10] = (54 >> 0) & 0xFF; //little byte first
+    byte_arr[11] = (54 >> 8) & 0xFF;
+    byte_arr[12] = (54 >> 16) & 0xFF;
+    byte_arr[13] = (54 >> 24) & 0xFF; //big byte last
+
+    //info HDR size
+    byte_arr[14] = (40 >> 0) & 0xFF;
+    byte_arr[15] = (40 >> 8) & 0xFF;
+    byte_arr[16] = (40 >> 16) & 0xFF;
+    byte_arr[17] = (40 >> 24) & 0xFF;
+
+    //image width
+    byte_arr[18] = (image_width >> 0) & 0xFF;
+    byte_arr[19] = (image_width >> 8) & 0xFF;
+    byte_arr[20] = (image_width >> 16) & 0xFF;
+    byte_arr[21] = (image_width >> 24) & 0xFF;
+
+    //image height
+    byte_arr[22] = (image_height >> 0) & 0xFF;
+    byte_arr[23] = (image_height >> 8) & 0xFF;
+    byte_arr[24] = (image_height >> 16) & 0xFF;
+    byte_arr[25] = (image_height >> 24) & 0xFF;
+
+    //planes
+    byte_arr[26] = (planes >> 0) & 0xFF;
+    byte_arr[27] = (planes >> 8) & 0xFF;
+
+    //bits/pixel
+    byte_arr[28] = (bits_per_pixel >> 0) & 0xFF;
+    byte_arr[29] = (bits_per_pixel >> 8) & 0xFF;
+
+    //compression method
+    byte_arr[30] = (compression_type >> 0) & 0xFF;
+    byte_arr[31] = (compression_type >> 8) & 0xFF;
+    byte_arr[32] = (compression_type >> 16) & 0xFF;
+    byte_arr[33] = (compression_type >> 24) & 0xFF;
+
+    //compressed size
+    byte_arr[34] = (comp_image_size >> 0) & 0xFF;
+    byte_arr[35] = (comp_image_size >> 8) & 0xFF;
+    byte_arr[36] = (comp_image_size >> 16) & 0xFF;
+    byte_arr[37] = (comp_image_size >> 24) & 0xFF;
+
+    //x pixels/meter
+    byte_arr[38] = (x_pixs_per_meter >> 0) & 0xFF;
+    byte_arr[39] = (x_pixs_per_meter >> 8) & 0xFF;
+    byte_arr[40] = (x_pixs_per_meter >> 16) & 0xFF;
+    byte_arr[41] = (x_pixs_per_meter >> 24) & 0xFF;
+
+    //y pixels/meter
+    byte_arr[42] = (y_pixs_per_meter >> 0) & 0xFF;
+    byte_arr[43] = (y_pixs_per_meter >> 8) & 0xFF;
+    byte_arr[44] = (y_pixs_per_meter >> 16) & 0xFF;
+    byte_arr[45] = (y_pixs_per_meter >> 24) & 0xFF;
+
+    //colors used
+    byte_arr[46] = (num_colors_used >> 0) & 0xFF;
+    byte_arr[47] = (num_colors_used >> 8) & 0xFF;
+    byte_arr[48] = (num_colors_used >> 16) & 0xFF;
+    byte_arr[49] = (num_colors_used >> 24) & 0xFF;
+
+    //important colors
+    byte_arr[50] = (num_imp_colors >> 0) & 0xFF;
+    byte_arr[51] = (num_imp_colors >> 8) & 0xFF;
+    byte_arr[52] = (num_imp_colors >> 16) & 0xFF;
+    byte_arr[53] = (num_imp_colors >> 24) & 0xFF;
+
+    //color palette
+
+    //pixel data
+    int scanline_size = ceil((bits_per_pixel * image_width)/32.0f) * 4;
+    int padding_bytes = scanline_size - ((bits_per_pixel * image_width)/8); //number of bytes per row of 0's
+    printf("# of padding bytes = %d\n", padding_bytes);
+
+    int index = 54;
+    int i, j;
+    for(j = image_height - 1; j >= 0; j--){ //scanlines are in bottom-to-top order
+        for(i = 0; i < image_width; i++){
+            BMP_Pixel_24_bit* pixel = get_pixel(i, j);
+            printf("x = %d, y = %d\n", i, j);
+            byte_arr[index++] = pixel->get_blue(); //BLUE is stored first
+            byte_arr[index++] = pixel->get_green();
+            byte_arr[index++] = pixel->get_red(); //RED is stored last
+        }
+        for(i = 0; i < padding_bytes; i++){
+            byte_arr[index++] = 0;
+            printf("pad\n");
+        }
+        printf("what is index? %d\n", index);
+    }
+
+    writeFileBytes(filename, byte_arr, file_size);
+}
+
+//Image is indexed with (0, 0) at the top left corner of the image. X is horizontal and Y is vertical
 void BMP_Image::set_pixel(int x_pos, int y_pos, unsigned char r, unsigned char g, unsigned char b){
     BMP_Pixel_24_bit* pixel = get_pixel(x_pos, y_pos);
     pixel->set_color(r, g, b);
 }
 
+//Image is indexed with (0, 0) at the top left corner of the image. X is horizontal and Y is vertical
 BMP_Pixel_24_bit* BMP_Image::get_pixel(int x_pos, int y_pos){
-    int index = x_pos + (y_pos*image_height);
+    int index = x_pos + (y_pos*image_width);
     return (&pixel_data.at(index));
 }
 

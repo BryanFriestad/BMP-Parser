@@ -35,6 +35,7 @@ public:
     ~BMP_Image();
     void set_pixel(int x_pos, int y_pos, unsigned char r, unsigned char g, unsigned char b);
     BMP_Pixel_24_bit* get_pixel(int x_pos, int y_pos);
+    void writeImageToFile(char* filename);
     void print_image_data();
     void print_stats();
 };
