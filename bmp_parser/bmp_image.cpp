@@ -35,7 +35,7 @@ BMP_Image::BMP_Image(char* filename){
     int palette_offset          = 0x0036;
 
     file_size                   = constructIntegerFromByteArray(bmp + filesize_offset, 4, true);
-    int data_offset             = constructIntegerFromByteArray(bmp + data_offset_offset, 4, true);
+    data_offset                 = constructIntegerFromByteArray(bmp + data_offset_offset, 4, true);
     if(DEBUG_LEVEL > 0) printf("data offset = byte %d\n", data_offset);
     info_hdr_size               = constructIntegerFromByteArray(bmp + info_hdr_size_offset, 4, true);
     image_width                 = constructIntegerFromByteArray(bmp + image_width_offset, 4, true);
@@ -75,57 +75,48 @@ BMP_Image::BMP_Image(char* filename){
 
 //makes a new 24 bit depth, no-compression, image with x width and y height, filled with white
 BMP_Image::BMP_Image(int x, int y){
-    /*
-    file_size                   = constructIntegerFromByteArray(bmp + filesize_offset, 4, true);
-    int data_offset             = constructIntegerFromByteArray(bmp + data_offset_offset, 4, true);
-    if(DEBUG_LEVEL > 0) printf("data offset = byte %d\n", data_offset);
-    info_hdr_size               = constructIntegerFromByteArray(bmp + info_hdr_size_offset, 4, true);
-    image_width                 = constructIntegerFromByteArray(bmp + image_width_offset, 4, true);
-    image_height                = constructIntegerFromByteArray(bmp + image_height_offset, 4, true);
 
-    planes                      = 1;
+    image_width                 = x;
+    image_height                = y;
     bits_per_pixel              = 24;
 
+    planes                      = 1;
     compression_type            = 0;
     comp_image_size             = 0;
-    x_pixs_per_meter            = constructIntegerFromByteArray(bmp + x_pixs_per_meter_offset, 4, true);
-    y_pixs_per_meter            = constructIntegerFromByteArray(bmp + y_pixs_per_meter_offset, 4, true);
-    num_colors_used             = constructIntegerFromByteArray(bmp + num_colors_used_offset, 4, true);
-    num_imp_colors              = constructIntegerFromByteArray(bmp + num_imp_colors_offset, 4, true);
-
-    palette = (int*) malloc(sizeof(int) * num_colors_used);
 
     int scanline_size = ceil((bits_per_pixel * image_width)/32.0f) * 4; //the number of bytes per scanline, including padding up to multiple of 4 bytes
     if(DEBUG_LEVEL > 1) printf("scanline width: %d bytes\n", scanline_size);
 
-    int i, j;
-    for(j = image_height - 1; j >= 0; j--){ //scanlines are in bottom-to-top order
-        for(i = 0; i < image_width; i++){
-            int row_offset = j * scanline_size;
-            int col_offset = i * (bits_per_pixel/8);
-            if(DEBUG_LEVEL > 2) printf("col, row offsets = <%d, %d>\n", row_offset, col_offset);
-
-            unsigned char r, g, b;
-            r = bmp[data_offset + row_offset + col_offset + 2];
-            g = bmp[data_offset + row_offset + col_offset + 1];
-            b = bmp[data_offset + row_offset + col_offset + 0];
-            BMP_Pixel_24_bit pixel{r, g, b};
-            pixel_data.push_back(pixel);
-        }
+    int i;
+    for(i = 0; i < image_height*image_width; i++){
+        BMP_Pixel_24_bit p{255, 255, 255};
+        pixel_data.push_back(p);
     }
-    */
+
+    file_size                   = 54 + (scanline_size * image_height);
+    data_offset                 = 54;
+    info_hdr_size               = 40;
+
+    x_pixs_per_meter            = 3780;
+    y_pixs_per_meter            = 3780;
+    num_colors_used             = 0;
+    num_imp_colors              = 0;
+
+    palette = (int*) malloc(sizeof(int) * num_colors_used);
 }
 
 BMP_Image::~BMP_Image(){
     free(palette);
 }
 
-void BMP_Image::set_pixel(int x_pos, int y_pos, char r, char g, char b){
-
+void BMP_Image::set_pixel(int x_pos, int y_pos, unsigned char r, unsigned char g, unsigned char b){
+    BMP_Pixel_24_bit* pixel = get_pixel(x_pos, y_pos);
+    pixel->set_color(r, g, b);
 }
 
-BMP_Pixel_24_bit BMP_Image::get_pixel(int x_pos, int y_pos){
-
+BMP_Pixel_24_bit* BMP_Image::get_pixel(int x_pos, int y_pos){
+    int index = x_pos + (y_pos*image_height);
+    return (&pixel_data.at(index));
 }
 
 void BMP_Image::print_image_data(){

@@ -4,25 +4,23 @@
 
 1586201310 c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\bmp_pixel.h
 
-1586471997 source:c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\main.cpp
+1586473255 source:c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\main.cpp
 	<iostream>
 	<vector>
 	<stdio.h>
 	"bmp_pixel.h"
 	"bmp_image.h"
 
-1586203206 source:c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\bmp_image.cpp
+1586473602 source:c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\bmp_image.cpp
 	"bmp_image.h"
 	"bmp_pixel.h"
 	"helper_functions.h"
 	"debug_settings.h"
-	<iostream>
-	<fstream>
 	<stdlib.h>
-	<memory>
 	<stdio.h>
+	<math.h>
 
-1586471988 c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\bmp_image.h
+1586473494 c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\bmp_image.h
 	"bmp_pixel.h"
 	<vector>
 

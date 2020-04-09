@@ -8,6 +8,7 @@ class BMP_Image{
 private:
     //HDR
     int file_size;
+    int data_offset;
 
     //INFO HDR
     int info_hdr_size;
@@ -32,8 +33,8 @@ public:
     BMP_Image(char* filename); //used to load a bmp from a file
     BMP_Image(int x, int y); //makes a new 24 bit depth, no-compression, image with x width and y height, filled with white
     ~BMP_Image();
-    void set_pixel(int x_pos, int y_pos, char r, char g, char b);
-    BMP_Pixel_24_bit get_pixel(int x_pos, int y_pos);
+    void set_pixel(int x_pos, int y_pos, unsigned char r, unsigned char g, unsigned char b);
+    BMP_Pixel_24_bit* get_pixel(int x_pos, int y_pos);
     void print_image_data();
     void print_stats();
 };
