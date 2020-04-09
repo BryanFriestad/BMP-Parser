@@ -35,6 +35,7 @@ public:
     void set_pixel(int x_pos, int y_pos, char r, char g, char b);
     BMP_Pixel_24_bit get_pixel(int x_pos, int y_pos);
     void print_image_data();
+    void print_stats();
 };
 
 #endif // BMP_IMAGE_H_INCLUDED

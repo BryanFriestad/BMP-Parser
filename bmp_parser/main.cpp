@@ -11,5 +11,6 @@ int main()
 {
     BMP_Image image{"test.bmp"};
     image.print_image_data();
+    image.print_stats();
     return 0;
 }

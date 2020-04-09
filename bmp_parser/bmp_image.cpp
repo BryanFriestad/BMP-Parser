@@ -75,7 +75,45 @@ BMP_Image::BMP_Image(char* filename){
 
 //makes a new 24 bit depth, no-compression, image with x width and y height, filled with white
 BMP_Image::BMP_Image(int x, int y){
+    /*
+    file_size                   = constructIntegerFromByteArray(bmp + filesize_offset, 4, true);
+    int data_offset             = constructIntegerFromByteArray(bmp + data_offset_offset, 4, true);
+    if(DEBUG_LEVEL > 0) printf("data offset = byte %d\n", data_offset);
+    info_hdr_size               = constructIntegerFromByteArray(bmp + info_hdr_size_offset, 4, true);
+    image_width                 = constructIntegerFromByteArray(bmp + image_width_offset, 4, true);
+    image_height                = constructIntegerFromByteArray(bmp + image_height_offset, 4, true);
 
+    planes                      = 1;
+    bits_per_pixel              = 24;
+
+    compression_type            = 0;
+    comp_image_size             = 0;
+    x_pixs_per_meter            = constructIntegerFromByteArray(bmp + x_pixs_per_meter_offset, 4, true);
+    y_pixs_per_meter            = constructIntegerFromByteArray(bmp + y_pixs_per_meter_offset, 4, true);
+    num_colors_used             = constructIntegerFromByteArray(bmp + num_colors_used_offset, 4, true);
+    num_imp_colors              = constructIntegerFromByteArray(bmp + num_imp_colors_offset, 4, true);
+
+    palette = (int*) malloc(sizeof(int) * num_colors_used);
+
+    int scanline_size = ceil((bits_per_pixel * image_width)/32.0f) * 4; //the number of bytes per scanline, including padding up to multiple of 4 bytes
+    if(DEBUG_LEVEL > 1) printf("scanline width: %d bytes\n", scanline_size);
+
+    int i, j;
+    for(j = image_height - 1; j >= 0; j--){ //scanlines are in bottom-to-top order
+        for(i = 0; i < image_width; i++){
+            int row_offset = j * scanline_size;
+            int col_offset = i * (bits_per_pixel/8);
+            if(DEBUG_LEVEL > 2) printf("col, row offsets = <%d, %d>\n", row_offset, col_offset);
+
+            unsigned char r, g, b;
+            r = bmp[data_offset + row_offset + col_offset + 2];
+            g = bmp[data_offset + row_offset + col_offset + 1];
+            b = bmp[data_offset + row_offset + col_offset + 0];
+            BMP_Pixel_24_bit pixel{r, g, b};
+            pixel_data.push_back(pixel);
+        }
+    }
+    */
 }
 
 BMP_Image::~BMP_Image(){
@@ -101,4 +139,18 @@ void BMP_Image::print_image_data(){
             printf("(%d, %d) = <R: %u, G: %u, B: %u>\n", i%image_width, i/image_width, p.get_red(), p.get_green(), p.get_blue());
         }
     }
+}
+
+void BMP_Image::print_stats(){
+    printf("File Size: %u bytes\n", file_size);
+    printf("(Width, Height) = (%u, %u)\n", image_width, image_height);
+    printf("Bits/pixel = %d bits\n", bits_per_pixel);
+
+    printf("Info header size = %d bytes\n", info_hdr_size);
+    printf("# of Planes = %d\n", planes);
+    printf("Compression Type = %d\n", compression_type);
+    printf("Compressed Image size = %d bytes\n", comp_image_size);
+    printf("Pixels per meter = <x: %d, y: %d>\n", x_pixs_per_meter, y_pixs_per_meter);
+    printf("Number of colors used = %d\n", num_colors_used);
+    printf("Number of important colors = %d\n", num_imp_colors);
 }
