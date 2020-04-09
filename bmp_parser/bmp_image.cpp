@@ -36,6 +36,7 @@ BMP_Image::BMP_Image(char* filename){
 
     file_size                   = constructIntegerFromByteArray(bmp + filesize_offset, 4, true);
     int data_offset             = constructIntegerFromByteArray(bmp + data_offset_offset, 4, true);
+    if(DEBUG_LEVEL > 0) printf("data offset = byte %d\n", data_offset);
     info_hdr_size               = constructIntegerFromByteArray(bmp + info_hdr_size_offset, 4, true);
     image_width                 = constructIntegerFromByteArray(bmp + image_width_offset, 4, true);
     image_height                = constructIntegerFromByteArray(bmp + image_height_offset, 4, true);
@@ -52,16 +53,23 @@ BMP_Image::BMP_Image(char* filename){
 
     palette = (int*) malloc(sizeof(int) * num_colors_used);
 
-    int scanline_size = ceil((bits_per_pixel * image_width)/32) * 4; //the number of bytes per scanline, including padding up to multiple of 4 bytes
+    int scanline_size = ceil((bits_per_pixel * image_width)/32.0f) * 4; //the number of bytes per scanline, including padding up to multiple of 4 bytes
+    if(DEBUG_LEVEL > 1) printf("scanline width: %d bytes\n", scanline_size);
 
-    int i;
-    for(i = 0; i < (image_width * image_height * 3); i+=3){
-        unsigned char r, g, b;
-        r = bmp[data_offset + i + 2];
-        g = bmp[data_offset + i + 1];
-        b = bmp[data_offset + i + 0];
-        BMP_Pixel_24_bit pixel{r, g, b};
-        pixel_data.push_back(pixel);
+    int i, j;
+    for(j = image_height - 1; j >= 0; j--){ //scanlines are in bottom-to-top order
+        for(i = 0; i < image_width; i++){
+            int row_offset = j * scanline_size;
+            int col_offset = i * (bits_per_pixel/8);
+            if(DEBUG_LEVEL > 2) printf("col, row offsets = <%d, %d>\n", row_offset, col_offset);
+
+            unsigned char r, g, b;
+            r = bmp[data_offset + row_offset + col_offset + 2];
+            g = bmp[data_offset + row_offset + col_offset + 1];
+            b = bmp[data_offset + row_offset + col_offset + 0];
+            BMP_Pixel_24_bit pixel{r, g, b};
+            pixel_data.push_back(pixel);
+        }
     }
 }
 
@@ -83,8 +91,8 @@ BMP_Pixel_24_bit BMP_Image::get_pixel(int x_pos, int y_pos){
 }
 
 void BMP_Image::print_image_data(){
-    printf("File Size: %u\n", file_size);
-    printf("(Height, Width) = (%u, %u)\n", image_height, image_width);
+    printf("File Size: %u bytes\n", file_size);
+    printf("(Width, Height) = (%u, %u)\n", image_width, image_height);
 
     int i;
     for(i = 0; i < image_height*image_width; i++){
