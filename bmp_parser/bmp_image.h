@@ -38,6 +38,8 @@ public:
     void writeImageToFile(char* filename);
     void print_image_data();
     void print_stats();
+    int get_image_width(){ return image_width; }
+    int get_image_height(){ return image_height; }
 };
 
 #endif // BMP_IMAGE_H_INCLUDED

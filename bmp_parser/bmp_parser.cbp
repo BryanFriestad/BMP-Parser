@@ -39,10 +39,13 @@
 		<Unit filename="debug_settings.h" />
 		<Unit filename="helper_functions.cpp" />
 		<Unit filename="helper_functions.h" />
+		<Unit filename="image_editor.cpp" />
+		<Unit filename="image_editor.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
+			<envvars />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

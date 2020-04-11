@@ -40,3 +40,35 @@
 
 1586538024 c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\debug_settings.h
 
+1586647446 source:/Users/bryanfriestad/Documents/BMP-Parser/bmp_parser/bmp_image.cpp
+	"bmp_image.h"
+	"bmp_pixel.h"
+	"helper_functions.h"
+	"debug_settings.h"
+	<stdlib.h>
+	<stdio.h>
+	<math.h>
+	<cstdint>
+
+1586648053 /Users/bryanfriestad/Documents/BMP-Parser/bmp_parser/bmp_image.h
+	"bmp_pixel.h"
+	<vector>
+
+1586646514 /Users/bryanfriestad/Documents/BMP-Parser/bmp_parser/bmp_pixel.h
+	<cstdint>
+
+1586646514 /Users/bryanfriestad/Documents/BMP-Parser/bmp_parser/helper_functions.h
+	<cstdint>
+
+1586646514 /Users/bryanfriestad/Documents/BMP-Parser/bmp_parser/debug_settings.h
+
+1586646514 source:/Users/bryanfriestad/Documents/BMP-Parser/bmp_parser/bmp_pixel.cpp
+	"bmp_pixel.h"
+
+1586646514 source:/Users/bryanfriestad/Documents/BMP-Parser/bmp_parser/helper_functions.cpp
+	<iostream>
+	<fstream>
+	<cstdint>
+	<stdio.h>
+	"debug_settings.h"
+
