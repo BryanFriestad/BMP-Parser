@@ -9,7 +9,9 @@
 #include <cstdint> //used for uint8_t
 
 BMP_Image::BMP_Image(char* filename){
+    if(DEBUG_LEVEL > 2) printf("Info: Starting to read from file\n");
     char* bmp = readFileBytes(filename);
+    if(DEBUG_LEVEL > 2) printf("Info: Done reading from file\n");
 
     if(bmp[0] == 'B' and bmp[1] == 'M'){
         if(DEBUG_LEVEL > 0) printf("Signature good! This is a .bmp file\n");
@@ -35,15 +37,28 @@ BMP_Image::BMP_Image(char* filename){
     int num_imp_colors_offset   = 0x0032;
     int palette_offset          = 0x0036;
 
+    if(DEBUG_LEVEL > 2) printf("Starting to construct from byte array\n");
+
     file_size                   = constructIntegerFromByteArray(bmp + filesize_offset, 4, true);
     data_offset                 = constructIntegerFromByteArray(bmp + data_offset_offset, 4, true);
-    if(DEBUG_LEVEL > 0) printf("data offset = byte %d\n", data_offset);
+    if(DEBUG_LEVEL > 0) printf("\tdata offset = byte %d\n", data_offset);
     info_hdr_size               = constructIntegerFromByteArray(bmp + info_hdr_size_offset, 4, true);
+    if(info_hdr_size != 40){
+        if(DEBUG_LEVEL > 1) printf("\tWarning, information header (%d bytes) != 40 bytes\n", info_hdr_size);
+    }
+
     image_width                 = constructIntegerFromByteArray(bmp + image_width_offset, 4, true);
     image_height                = constructIntegerFromByteArray(bmp + image_height_offset, 4, true);
 
     planes                      = (short) constructIntegerFromByteArray(bmp + planes_offset, 2, true);
+    if(planes != 1){
+        if(DEBUG_LEVEL > 1) printf("\tWarning, # of planes (%d) != 1\n", planes);
+    }
+
     bits_per_pixel              = (short) constructIntegerFromByteArray(bmp + bits_per_pixel_offset, 2, true);
+    if(bits_per_pixel != 24){
+        if(DEBUG_LEVEL > 1) printf("\tWarning, bits/pixel (%d) != 24\n", bits_per_pixel);
+    }
 
     compression_type            = constructIntegerFromByteArray(bmp + compression_type_offset, 4, true);
     comp_image_size             = constructIntegerFromByteArray(bmp + comp_image_size_offset, 4, true);
@@ -54,17 +69,20 @@ BMP_Image::BMP_Image(char* filename){
 
     palette = (int*) malloc(sizeof(int) * num_colors_used);
 
+    if(DEBUG_LEVEL > 2) printf("\tStarting to make pixels from byte array\n");
+
     int scanline_size = ceil((bits_per_pixel * image_width)/32.0f) * 4; //the number of bytes per scanline, including padding up to multiple of 4 bytes
-    if(DEBUG_LEVEL > 1) printf("scanline width: %d bytes\n", scanline_size);
+    if(DEBUG_LEVEL > 1) printf("\tscanline width: %d bytes\n", scanline_size);
 
     int i, j;
     for(j = image_height - 1; j >= 0; j--){ //scanlines are in bottom-to-top order
         for(i = 0; i < image_width; i++){
+            //if(DEBUG_LEVEL > 2) printf("Info: adding pixel at position <%d, %d>\n", i, j);
             int row_offset = j * scanline_size;
             int col_offset = i * (bits_per_pixel/8);
-            if(DEBUG_LEVEL > 2) printf("col, row offsets = <%d, %d>\n", row_offset, col_offset);
+            //if(DEBUG_LEVEL > 3) printf("col, row offsets = <%d, %d>\n", row_offset, col_offset);
 
-            unsigned char r, g, b;
+            uint8_t r, g, b;
             r = bmp[data_offset + row_offset + col_offset + 2];
             g = bmp[data_offset + row_offset + col_offset + 1];
             b = bmp[data_offset + row_offset + col_offset + 0];
@@ -72,6 +90,8 @@ BMP_Image::BMP_Image(char* filename){
             pixel_data.push_back(pixel);
         }
     }
+
+    if(DEBUG_LEVEL > 2) printf("Done constructing image from byte array\n");
 }
 
 //makes a new 24 bit depth, no-compression, image with x width and y height, filled with white
@@ -86,7 +106,7 @@ BMP_Image::BMP_Image(int x, int y){
     comp_image_size             = 0;
 
     int scanline_size = ceil((bits_per_pixel * image_width)/32.0f) * 4; //the number of bytes per scanline, including padding up to multiple of 4 bytes
-    if(DEBUG_LEVEL > 1) printf("scanline width: %d bytes\n", scanline_size);
+    if(DEBUG_LEVEL > 2) printf("Info: scanline width: %d bytes\n", scanline_size);
 
     int i;
     for(i = 0; i < image_height*image_width; i++){
@@ -111,9 +131,13 @@ BMP_Image::~BMP_Image(){
 }
 
 void BMP_Image::writeImageToFile(char* filename){
-    //construct byte array
-    uint8_t byte_arr[file_size];
+    if(DEBUG_LEVEL > 2) printf("Info: Writing image to file\n");
 
+    if(DEBUG_LEVEL > 2) printf("\tInfo: manually allocating memory (%d bytes)\n", file_size);
+    //construct byte array
+    uint8_t* byte_arr = (uint8_t*) malloc(sizeof(uint8_t) * file_size);
+
+    if(DEBUG_LEVEL > 2) printf("\tInfo: starting header\n");
     //signature
     byte_arr[0] = 'B';
     byte_arr[1] = 'M';
@@ -136,6 +160,7 @@ void BMP_Image::writeImageToFile(char* filename){
     byte_arr[12] = (54 >> 16) & 0xFF;
     byte_arr[13] = (54 >> 24) & 0xFF; //big byte last
 
+    if(DEBUG_LEVEL > 2) printf("\tInfo: starting information header\n");
     //info HDR size
     byte_arr[14] = (40 >> 0) & 0xFF;
     byte_arr[15] = (40 >> 8) & 0xFF;
@@ -198,41 +223,69 @@ void BMP_Image::writeImageToFile(char* filename){
     byte_arr[52] = (num_imp_colors >> 16) & 0xFF;
     byte_arr[53] = (num_imp_colors >> 24) & 0xFF;
 
+    if(DEBUG_LEVEL > 2) printf("\tInfo: starting palette\n");
     //color palette
 
+    if(DEBUG_LEVEL > 2) printf("\tInfo: starting pixel data\n");
     //pixel data
     int scanline_size = ceil((bits_per_pixel * image_width)/32.0f) * 4;
+    if(DEBUG_LEVEL > 2) printf("\tInfo: scanline width: %d bytes\n", scanline_size);
+
     int padding_bytes = scanline_size - ((bits_per_pixel * image_width)/8); //number of bytes per row of 0's
-    printf("# of padding bytes = %d\n", padding_bytes);
+    if(DEBUG_LEVEL > 2) printf("\tInfo: padding bytes: %d bytes\n", padding_bytes);
 
     int index = 54;
     int i, j;
     for(j = image_height - 1; j >= 0; j--){ //scanlines are in bottom-to-top order
         for(i = 0; i < image_width; i++){
             BMP_Pixel_24_bit* pixel = get_pixel(i, j);
-            printf("x = %d, y = %d\n", i, j);
+            if(pixel == nullptr){
+                if(DEBUG_LEVEL > 0) printf("\tError: invalid pixel, quitting write at index = %d\n", index);
+                return;
+            }
             byte_arr[index++] = pixel->get_blue(); //BLUE is stored first
             byte_arr[index++] = pixel->get_green();
             byte_arr[index++] = pixel->get_red(); //RED is stored last
+
+            if(index > 660 && index < 670){
+                    printf("index == %d\n", index);
+                    if(DEBUG_LEVEL > 2) printf("\tInfo: adding pixel <%d, %d> to byte array\n", i, j);
+                    printf("(%d, %d) = <R: %u, G: %u, B: %u>\n", i, j, pixel->get_red(), pixel->get_green(), pixel->get_blue());
+            }
         }
         for(i = 0; i < padding_bytes; i++){
             byte_arr[index++] = 0;
-            printf("pad\n");
         }
-        printf("what is index? %d\n", index);
     }
-
-    writeFileBytes(filename, byte_arr, file_size);
+    if(index == file_size){
+        writeFileBytes(filename, byte_arr, file_size);
+    }
+    else{
+        if(DEBUG_LEVEL > 0) printf("\tFinal index does not match file_size (%d): %d\n", file_size, index);
+    }
+    free(byte_arr);
+    if(DEBUG_LEVEL > 2) printf("Info: Done writing image to file\n");
 }
 
 //Image is indexed with (0, 0) at the top left corner of the image. X is horizontal and Y is vertical
-void BMP_Image::set_pixel(int x_pos, int y_pos, unsigned char r, unsigned char g, unsigned char b){
+void BMP_Image::set_pixel(int x_pos, int y_pos, uint8_t r, uint8_t g, uint8_t b){
     BMP_Pixel_24_bit* pixel = get_pixel(x_pos, y_pos);
-    pixel->set_color(r, g, b);
+    if(pixel != nullptr){
+        pixel->set_color(r, g, b);
+    }
 }
 
 //Image is indexed with (0, 0) at the top left corner of the image. X is horizontal and Y is vertical
 BMP_Pixel_24_bit* BMP_Image::get_pixel(int x_pos, int y_pos){
+    if(x_pos < 0 || x_pos >= image_width){
+        if(DEBUG_LEVEL > 0) printf("x_pos out of bounds: <%d, %d>\n", x_pos, y_pos);
+        return nullptr;
+    }
+    if(y_pos < 0 || y_pos >= image_height){
+        if(DEBUG_LEVEL > 0) printf("y_pos out of bounds: <%d, %d>\n", x_pos, y_pos);
+        return nullptr;
+    }
+
     int index = x_pos + (y_pos*image_width);
     return (&pixel_data.at(index));
 }

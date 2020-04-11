@@ -11,25 +11,30 @@ using namespace std;
 
 int main()
 {
-    /*
-    uint8_t text[] = "Hello World/r/n";
-    writeFileBytes("text_test.txt", text, 13);
-    */
+
+    BMP_Image image{"images/stripes.bmp"};
+    image.print_stats();
+    image.set_pixel(0, 0, 255, 0, 0);
+    printf("\n\n");
+    //image.print_image_data();
+    //printf("\n\n");
+    image.writeImageToFile("images/stripes2.bmp");
+
 
 /*
-    BMP_Image image{"test.bmp"};
-    image.print_image_data();
-    image.writeImageToFile("test_copy.bmp");
-*/
+    BMP_Image image{900, 1200};
+    //image.print_image_data();
+    int i,j;
+    for(j = 0; j < 1200; j++){
+        for(i = 0; i < 900; i++){
+            image.set_pixel(i, j, 255, 255, 0);
+        }
+    }
 
-
-    BMP_Image image{3, 3};
-    image.print_image_data();
-    image.set_pixel(1, 1, 4, 4, 4);
     printf("\n");
-    image.print_image_data();
-    image.writeImageToFile("custom_test.bmp");
-
+    //image.print_image_data();
+    image.writeImageToFile("images/custom_test.bmp");
+*/
 
     return 0;
 }

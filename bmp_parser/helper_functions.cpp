@@ -1,6 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include <cstdint>
+#include <stdio.h> //for FILE and fopen
+
+#include "debug_settings.h"
 
 //copied from http://www.codecodex.com/wiki/Read_a_file_into_a_byte_array
 char* readFileBytes(const char *name)
@@ -15,12 +18,15 @@ char* readFileBytes(const char *name)
     return ret;
 }
 
-void writeFileBytes(const char* name, uint8_t* bytes, int len){
-    std::ofstream file(name);
-    if(file.is_open()){
-        file.seekp(0);
-        file.write((const char*) bytes, len);
-        file.close();
+void writeFileBytes(const char* name, uint8_t* bytes, uint32_t len){
+    FILE* file_ptr;
+    file_ptr = fopen(name, "wb");
+    if(file_ptr != nullptr){
+        uint32_t written = fwrite(bytes, sizeof(uint8_t), len, file_ptr);
+        fclose(file_ptr);
+        if(written != len){
+            if(DEBUG_LEVEL > 0) printf("Error, byte array length (%d bytes) and written bytes (%d bytes) do not match\n", len, written);
+        }
     }
 }
 

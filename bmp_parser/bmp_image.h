@@ -33,7 +33,7 @@ public:
     BMP_Image(char* filename); //used to load a bmp from a file
     BMP_Image(int x, int y); //makes a new 24 bit depth, no-compression, image with x width and y height, filled with white
     ~BMP_Image();
-    void set_pixel(int x_pos, int y_pos, unsigned char r, unsigned char g, unsigned char b);
+    void set_pixel(int x_pos, int y_pos, uint8_t r, uint8_t g, uint8_t b);
     BMP_Pixel_24_bit* get_pixel(int x_pos, int y_pos);
     void writeImageToFile(char* filename);
     void print_image_data();

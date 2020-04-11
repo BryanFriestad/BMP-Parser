@@ -1,10 +1,11 @@
 # depslib dependency file v1.0
-1586201303 source:c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\bmp_pixel.cpp
+1586560387 source:c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\bmp_pixel.cpp
 	"bmp_pixel.h"
 
-1586201310 c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\bmp_pixel.h
+1586560339 c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\bmp_pixel.h
+	<cstdint>
 
-1586476644 source:c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\main.cpp
+1586561733 source:c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\main.cpp
 	<iostream>
 	<vector>
 	<stdio.h>
@@ -13,7 +14,7 @@
 	"bmp_image.h"
 	"helper_functions.h"
 
-1586477442 source:c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\bmp_image.cpp
+1586563353 source:c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\bmp_image.cpp
 	"bmp_image.h"
 	"bmp_pixel.h"
 	"helper_functions.h"
@@ -23,17 +24,19 @@
 	<math.h>
 	<cstdint>
 
-1586473800 c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\bmp_image.h
+1586560432 c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\bmp_image.h
 	"bmp_pixel.h"
 	<vector>
 
-1586203459 c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\helper_functions.h
+1586559274 c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\helper_functions.h
 	<cstdint>
 
-1586203585 source:c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\helper_functions.cpp
+1586617327 source:c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\helper_functions.cpp
 	<iostream>
 	<fstream>
 	<cstdint>
+	<stdio.h>
+	"debug_settings.h"
 
-1586199436 c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\debug_settings.h
+1586538024 c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\debug_settings.h
 

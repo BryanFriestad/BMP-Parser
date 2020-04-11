@@ -1,26 +1,28 @@
 #ifndef BMP_PIXEL_H_INCLUDED
 #define BMP_PIXEL_H_INCLUDED
 
+#include <cstdint>
+
 class Generic_BMP_Pixel{
 private:
-    unsigned char pixel_depth;
+    uint8_t pixel_depth;
 public:
-    Generic_BMP_Pixel(unsigned char p_depth);
-    unsigned char get_pixel_depth(){ return pixel_depth; }
+    Generic_BMP_Pixel(uint8_t p_depth);
+    uint8_t get_pixel_depth(){ return pixel_depth; }
 };
 
 class BMP_Pixel_24_bit : public Generic_BMP_Pixel{
 private:
-    unsigned char red;
-    unsigned char green;
-    unsigned char blue;
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
 public:
     BMP_Pixel_24_bit();
-    BMP_Pixel_24_bit(unsigned char r, unsigned char g, unsigned char b);
-    void set_color(unsigned char r, unsigned char g, unsigned char b);
-    unsigned char get_red() { return red; }
-    unsigned char get_green() { return green; }
-    unsigned char get_blue() { return blue; }
+    BMP_Pixel_24_bit(uint8_t r, uint8_t g, uint8_t b);
+    void set_color(uint8_t r, uint8_t g, uint8_t b);
+    uint8_t get_red() { return red; }
+    uint8_t get_green() { return green; }
+    uint8_t get_blue() { return blue; }
 };
 
 class BMP_Pixel_1_bit : public Generic_BMP_Pixel{
