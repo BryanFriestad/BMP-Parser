@@ -6,19 +6,20 @@
 #include "bmp_pixel.h"
 #include "bmp_image.h"
 #include "helper_functions.h"
+#include "image_editor.h"
 
 using namespace std;
 
 int main()
 {
 
-    BMP_Image image{"images/stripes.bmp"};
+    BMP_Image image{"images/rick.bmp"};
     image.print_stats();
-    image.set_pixel(0, 0, 255, 0, 0);
     printf("\n\n");
+    BMP_Image inv_image = invert_colors(image);
     //image.print_image_data();
     //printf("\n\n");
-    image.writeImageToFile("images/stripes2.bmp");
+    inv_image.writeImageToFile("images/inv_rick.bmp");
 
 
 /*

@@ -246,12 +246,6 @@ void BMP_Image::writeImageToFile(char* filename){
             byte_arr[index++] = pixel->get_blue(); //BLUE is stored first
             byte_arr[index++] = pixel->get_green();
             byte_arr[index++] = pixel->get_red(); //RED is stored last
-
-            if(index > 660 && index < 670){
-                    printf("index == %d\n", index);
-                    if(DEBUG_LEVEL > 2) printf("\tInfo: adding pixel <%d, %d> to byte array\n", i, j);
-                    printf("(%d, %d) = <R: %u, G: %u, B: %u>\n", i, j, pixel->get_red(), pixel->get_green(), pixel->get_blue());
-            }
         }
         for(i = 0; i < padding_bytes; i++){
             byte_arr[index++] = 0;
