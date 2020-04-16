@@ -12,7 +12,7 @@ using namespace std;
 
 int main()
 {
-
+/*
     BMP_Image image{"images/guac.bmp"};
     image.print_stats();
     printf("\n\n");
@@ -20,22 +20,16 @@ int main()
     //image.print_image_data();
     //printf("\n\n");
     gray_image.writeImageToFile("images/gray_guac.bmp");
-
-
-/*
-    BMP_Image image{900, 1200};
-    //image.print_image_data();
-    int i,j;
-    for(j = 0; j < 1200; j++){
-        for(i = 0; i < 900; i++){
-            image.set_pixel(i, j, 255, 255, 0);
-        }
-    }
-
-    printf("\n");
-    //image.print_image_data();
-    image.writeImageToFile("images/custom_test.bmp");
 */
+
+
+    BMP_Image image{100, 100};
+    image.print_stats();
+    printf("\n");
+    uint8_t text[13] = "Hello World!";
+    image = encode_message(image, text, 12);
+    image.writeImageToFile("images/steg_test.bmp");
+
 
     return 0;
 }

@@ -5,7 +5,7 @@
 1586560339 c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\bmp_pixel.h
 	<cstdint>
 
-1586829480 source:c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\main.cpp
+1587053096 source:c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\main.cpp
 	<iostream>
 	<vector>
 	<stdio.h>
@@ -73,9 +73,12 @@
 	<stdio.h>
 	"debug_settings.h"
 
-1586829134 source:c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\image_editor.cpp
+1587079764 source:c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\image_editor.cpp
 	"image_editor.h"
+	"debug_settings.h"
+	<cstdint>
+	<stdio.h>
 
-1586829211 c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\image_editor.h
+1587079831 c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\image_editor.h
 	"bmp_image.h"
 
