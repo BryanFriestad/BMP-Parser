@@ -13,13 +13,13 @@ using namespace std;
 int main()
 {
 
-    BMP_Image image{"images/rick.bmp"};
+    BMP_Image image{"images/guac.bmp"};
     image.print_stats();
     printf("\n\n");
-    BMP_Image inv_image = invert_colors(image);
+    BMP_Image gray_image = grayscale_colors(image);
     //image.print_image_data();
     //printf("\n\n");
-    inv_image.writeImageToFile("images/inv_rick.bmp");
+    gray_image.writeImageToFile("images/gray_guac.bmp");
 
 
 /*
