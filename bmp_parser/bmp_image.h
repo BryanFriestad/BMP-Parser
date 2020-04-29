@@ -34,6 +34,7 @@ public:
     BMP_Image(int x, int y); //makes a new 24 bit depth, no-compression, image with x width and y height, filled with white
     ~BMP_Image();
     void set_pixel(int x_pos, int y_pos, uint8_t r, uint8_t g, uint8_t b);
+    void set_pixel(int x_pos, int y_pos, BMP_Pixel_24_bit* pixel_to_copy);
     void set_pixel_red(int x_pos, int y_pos, uint8_t r);
     void set_pixel_green(int x_pos, int y_pos, uint8_t g);
     void set_pixel_blue(int x_pos, int y_pos, uint8_t b);

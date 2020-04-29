@@ -5,6 +5,6 @@
 
 BMP_Image invert_colors(BMP_Image im);
 BMP_Image grayscale_colors(BMP_Image im);
-BMP_Image encode_message(BMP_Image im, uint8_t* message, int msg_len, int bits_per_comp);
+BMP_Image encode_message(BMP_Image im, uint8_t* message, int msg_len, int bits_per_comp, bool per_color_channel);
 
 #endif // IMAGE_EDITOR_H_INCLUDED

@@ -269,6 +269,10 @@ void BMP_Image::set_pixel(int x_pos, int y_pos, uint8_t r, uint8_t g, uint8_t b)
     }
 }
 
+void BMP_Image::set_pixel(int x_pos, int y_pos, BMP_Pixel_24_bit* pixel_to_copy){
+    set_pixel(x_pos, y_pos, pixel_to_copy->get_red(), pixel_to_copy->get_green(), pixel_to_copy->get_blue());
+}
+
 //Image is indexed with (0, 0) at the top left corner of the image. X is horizontal and Y is vertical
 void BMP_Image::set_pixel_red(int x_pos, int y_pos, uint8_t r){
     BMP_Pixel_24_bit* pixel = get_pixel(x_pos, y_pos);
