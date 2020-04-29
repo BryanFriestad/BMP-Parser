@@ -270,6 +270,30 @@ void BMP_Image::set_pixel(int x_pos, int y_pos, uint8_t r, uint8_t g, uint8_t b)
 }
 
 //Image is indexed with (0, 0) at the top left corner of the image. X is horizontal and Y is vertical
+void BMP_Image::set_pixel_red(int x_pos, int y_pos, uint8_t r){
+    BMP_Pixel_24_bit* pixel = get_pixel(x_pos, y_pos);
+    if(pixel != nullptr){
+        pixel->set_color(r, pixel->get_green(), pixel->get_blue());
+    }
+}
+
+//Image is indexed with (0, 0) at the top left corner of the image. X is horizontal and Y is vertical
+void BMP_Image::set_pixel_green(int x_pos, int y_pos, uint8_t g){
+    BMP_Pixel_24_bit* pixel = get_pixel(x_pos, y_pos);
+    if(pixel != nullptr){
+        pixel->set_color(pixel->get_red(), g, pixel->get_blue());
+    }
+}
+
+//Image is indexed with (0, 0) at the top left corner of the image. X is horizontal and Y is vertical
+void BMP_Image::set_pixel_blue(int x_pos, int y_pos, uint8_t b){
+    BMP_Pixel_24_bit* pixel = get_pixel(x_pos, y_pos);
+    if(pixel != nullptr){
+        pixel->set_color(pixel->get_red(), pixel->get_green(), b);
+    }
+}
+
+//Image is indexed with (0, 0) at the top left corner of the image. X is horizontal and Y is vertical
 BMP_Pixel_24_bit* BMP_Image::get_pixel(int x_pos, int y_pos){
     if(x_pos < 0 || x_pos >= image_width){
         if(DEBUG_LEVEL > 0) printf("x_pos out of bounds: <%d, %d>\n", x_pos, y_pos);

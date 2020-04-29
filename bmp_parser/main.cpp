@@ -23,13 +23,12 @@ int main()
 */
 
 
-    BMP_Image image{100, 100};
+    BMP_Image image{"images/guac.bmp"};
     image.print_stats();
     printf("\n");
     uint8_t text[13] = "Hello World!";
-    image = encode_message(image, text, 12);
-    image.writeImageToFile("images/steg_test.bmp");
-
+    image = encode_message(image, text, 12, 1);
+    image.writeImageToFile("images/guac_steg_test.bmp");
 
     return 0;
 }

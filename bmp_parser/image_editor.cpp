@@ -34,7 +34,14 @@ BMP_Image grayscale_colors(BMP_Image im){
     return new_i;
 }
 
-BMP_Image encode_message(BMP_Image im, uint8_t* message, int msg_len){
+/**
+  * im: The original image
+  * message: the message that you want to encode, as a byte array
+  * msg_len: the length of the message in bytes
+  * bits_per_comp: the number of bits to encode in each component (color_channel/pixel)
+  * per_color_channel: true if you are encoding values in each color channle, false if only encoding in red channel (least significant)
+  */
+BMP_Image encode_message(BMP_Image im, uint8_t* message, int msg_len, int bits_per_comp){
 
     BMP_Image new_i{im.get_image_width(), im.get_image_height()};
 
