@@ -73,12 +73,13 @@
 	<stdio.h>
 	"debug_settings.h"
 
-1588199043 source:c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\image_editor.cpp
+1591293617 source:c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\image_editor.cpp
 	"image_editor.h"
 	"debug_settings.h"
 	<cstdint>
 	<stdio.h>
 	<cmath>
+	<stdlib.h>
 
 1588197413 c:\users\bryan friestad\desktop\projects\bmp parser\bmp_parser\image_editor.h
 	"bmp_image.h"

@@ -23,12 +23,12 @@ int main()
 */
 
 
-    BMP_Image image{100, 1};
+    BMP_Image image{"images/guac.bmp"};
     image.print_stats();
     printf("\n");
-    uint8_t text[13] = "Hello World!";
-    image = encode_message(image, text, 12, 8, true);
-    image.writeImageToFile("images/steg_test4.bmp");
+    uint8_t text[76] = "Hello World! My name is Guacamole and I have a message encoded in my fur :)";
+    image = encode_message(image, text, 75, 4, false);
+    image.writeImageToFile("images/steg_test_guac.bmp");
 
     return 0;
 }

@@ -4,6 +4,7 @@
 #include <cstdint> //for uint8_t
 #include <stdio.h> //for printf
 #include <cmath> //for pow
+#include <stdlib.h> //for integer abs
 
 BMP_Image invert_colors(BMP_Image im){
     BMP_Image new_i{im.get_image_width(), im.get_image_height()};
@@ -41,12 +42,13 @@ BMP_Image grayscale_colors(BMP_Image im){
   * message: the message that you want to encode, as a byte array
   * msg_len: the length of the message in bytes
   * bits_per_comp: the number of bits to encode in each component (color_channel/pixel)
-  * per_color_channel: true if you are encoding values in each color channle, false if only encoding in red channel (least significant)
+  * per_color_channel: true if you are encoding values in each color channel, false if only encoding in red channel (least significant)
   */
 BMP_Image encode_message(BMP_Image im, uint8_t* message, int msg_len, int bits_per_comp, bool per_color_channel){
 
     BMP_Image new_i{im.get_image_width(), im.get_image_height()};
 
+    //Input validation
     if(bits_per_comp > 8){
         if(DEBUG_LEVEL > 0) printf("Error: too many bits per component (%d)\n", bits_per_comp);
         return new_i;
@@ -58,7 +60,7 @@ BMP_Image encode_message(BMP_Image im, uint8_t* message, int msg_len, int bits_p
 
     if(msg_len*8 > im.get_image_width() * im.get_image_height()){
         if(DEBUG_LEVEL > 0) printf("Error: message is too long\n");
-        return new_i; //the message is too long
+        return new_i;
     }
 
     //copy the whole picture
@@ -77,8 +79,27 @@ BMP_Image encode_message(BMP_Image im, uint8_t* message, int msg_len, int bits_p
         uint8_t data_byte = message[data_bit/8];
         int data_to_encode_start_bit = data_bit % 8;
         int shift_left_amt = 8 - (data_to_encode_start_bit + bits_per_comp);
-        uint8_t data_to_encode = data_byte >> shift_left_amt;
-        //TODO: there is an issue here when the bits need to be grabbed from two bytes
+        uint8_t data_to_encode;
+        if(shift_left_amt >= 0){
+            data_to_encode = data_byte >> shift_left_amt;
+        }
+        else{ //in this case, the data to encode has overflowed to the next byte
+            int bits_in_first_byte = bits_per_comp + shift_left_amt;
+            int bits_in_second_byte = abs(shift_left_amt);
+
+            uint8_t first_byte = data_byte;
+            data_to_encode = first_byte << bits_in_second_byte;
+
+            if(data_bit + 8 <= msg_len*8){ //make sure there even is a second byte (if index in in bounds)
+                uint8_t second_byte_bitmask = pow(2, bits_in_second_byte) - 1;
+                uint8_t second_byte = message[data_bit/8 + 1];
+                uint8_t data_to_encode_from_second_byte = second_byte >> (8 - bits_in_second_byte);
+                data_to_encode_from_second_byte &= second_byte_bitmask;
+
+                data_to_encode |= data_to_encode_from_second_byte;
+            }
+            //otherwise do nothing
+        }
         data_to_encode &= data_bitmask;
 
         //step 2: get the pixel we are encoding
@@ -116,27 +137,6 @@ BMP_Image encode_message(BMP_Image im, uint8_t* message, int msg_len, int bits_p
         //step 5: advance to the next component
         data_bit += bits_per_comp;
     }
-
-    /* old code
-    int encoded_bytes = 0;
-    int bit;
-    while(encoded_bytes < msg_len){
-        for(bit = 0; bit < 8; bit++){
-            uint8_t bitmask = 0x1 << bit;
-            int pixel_num = (encoded_bytes*8) + bit;
-            int pixel_x = pixel_num % im.get_image_width();
-            int pixel_y = pixel_num / im.get_image_width();
-            BMP_Pixel_24_bit* pixel_ptr = im.get_pixel(pixel_x, pixel_y);
-
-            //get bit to encode
-            //check if it's 0 or 1
-            //appropriately encode LSB of red component
-            uint8_t new_red = (message[encoded_bytes] & bitmask) ? (pixel_ptr->get_red() | 0x01) : (pixel_ptr->get_red() & 0xFE);
-            new_i.set_pixel(pixel_x, pixel_y, new_red, pixel_ptr->get_green(), pixel_ptr->get_blue());
-        }
-        encoded_bytes++;
-    }
-    */
 
     return new_i;
 }
